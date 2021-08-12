@@ -11,15 +11,35 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <FS.h>
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#endif
 
+// Which pin on the Arduino is connected to the NeoPixels?
+// On a Trinket or Gemma we suggest changing this to 1:
+// Which pin on the Arduino is connected to the NeoPixels?
+// On a Trinket or Gemma we suggest changing this to 1:
+#define LED_PIN    14
+
+// How many NeoPixels are attached to the Arduino?
+#define LED_COUNT 84
+
+// Declare our NeoPixel strip object:
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+ 
 AsyncWebServer server(80);
 IPAddress apIP(8,8,4,4);
 
 WiFiServer WiFiserver(80);
-const char* ssid = "Freebox-5A76C";
+const char* ssid = "Freebox-5A276C";
 const char* password = "cwh7fq3wcrq3vktmqkwc52";
 
 const char* PARAM_MESSAGE = "message";
+const char* r = "r";
+const char* g = "g";
+const char* b = "b";
+
 
 void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
@@ -51,6 +71,8 @@ public:
 
 
 void setup() {
+  strip.clear();
+  strip.begin();
     Serial.begin(115200);
     /* spiffs */
     SPIFFS.begin();
@@ -79,7 +101,7 @@ void setup() {
           // provided IP to all DNS request
           dnsServer.start(53, "*", apIP);
           server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-          request->send(SPIFFS, "/index.html", "text/html");
+          request->send(SPIFFS, "/portal.html", "text/html");
 
     });
 
@@ -102,6 +124,21 @@ void setup() {
             message = "No message sent";
         }
         request->send(200, "text/plain", "Hello, GET: " + message);
+    });
+    server.on("/fill", HTTP_GET, [] (AsyncWebServerRequest *request) {
+        String red = request->getParam(r)->value();
+        String green = request->getParam(g)->value();
+        String blue = request->getParam(b)->value();
+        if (request->hasParam("r")) {
+
+            strip.fill(strip.Color((uint8_t)atoi(red.c_str()), (uint8_t)atoi(green.c_str()), (uint8_t)atoi(blue.c_str())), 0, LED_COUNT);
+            strip.show();
+            Serial.println(red);
+            Serial.println(green);
+            Serial.println(blue);
+
+        }
+        request->send(200, "text/plain", "Hello, GET: ");
     });
     server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request){
       request->send(SPIFFS, "/index.html", "text/html");
@@ -128,7 +165,9 @@ void setup() {
 
     server.begin();
     }
-
+  
+    strip.fill(strip.Color(0, 255, 0), 0, LED_COUNT);
+    strip.show();
 }
 
 void loop() {
