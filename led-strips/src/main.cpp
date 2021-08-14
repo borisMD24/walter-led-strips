@@ -15,6 +15,8 @@
 #ifdef __AVR__
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
+#include <EEPROM.h>
+#include <CaptivePortal.h>
 
 // Which pin on the Arduino is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1:
@@ -32,7 +34,7 @@ AsyncWebServer server(80);
 IPAddress apIP(8,8,4,4);
 
 WiFiServer WiFiserver(80);
-const char* ssid = "Freebox-5A276C";
+const char* ssid = "Feebox-5A276C";
 const char* password = "cwh7fq3wcrq3vktmqkwc52";
 
 const char* PARAM_MESSAGE = "message";
@@ -93,19 +95,7 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-          WiFi.mode(WIFI_AP);
-          WiFi.softAP("New Walter's");
-          WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-
-          // if DNSServer is started with "*" for domain name, it will reply with
-          // provided IP to all DNS request
-          dnsServer.start(53, "*", apIP);
-          server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-          request->send(SPIFFS, "/portal.html", "text/html");
-
-    });
-
-          server.begin();
+          CaptivePortal cp;
     } else {
 
     Serial.print("IP Address: ");
