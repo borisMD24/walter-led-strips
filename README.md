@@ -2,4 +2,6 @@
 
 ## ino code for the walter led-strip code !
 
-### currently working on the offline portal
+### currently working on : 
+* WalterLed class
+* WalterLedStrip class
