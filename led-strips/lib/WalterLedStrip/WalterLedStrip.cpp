@@ -1,6 +1,6 @@
 #include "WalterLedStrip.h"
 
-WalterLedStrip::WalterLedStrip(int size){
+WalterLedStrip::WalterLedStrip(int size, int pin):Adafruit_NeoPixel::Adafruit_NeoPixel(size, pin,  NEO_GRB + NEO_KHZ800){
     this->size = size;
 }
 WalterLedStrip::~WalterLedStrip(){
