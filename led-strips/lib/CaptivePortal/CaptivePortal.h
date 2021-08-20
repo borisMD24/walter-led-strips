@@ -8,10 +8,13 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #endif
-#include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <FS.h>
 #include <Adafruit_NeoPixel.h>
+#include <ESPAsyncWebServer.h>
+#include <esp_event.h>
+#include <esp_event_legacy.h>
+
 using namespace std;
 #ifndef CAPTIVE_PORTAL_H_INCLUDED
     #define CAPTIVE_PORTAL_H_INCLUDED
@@ -23,12 +26,12 @@ class CaptivePortal
         /* data */
         DNSServer dnsServer;
         WiFiClass wifi;
-        WiFiServer WiFiserver;
-        AsyncWebServer server;
+        WiFiServer wifiServer;
+        void cb();
 
-        void setup();
-        void loop();
     public:
+        void setup();
+        void update();
         CaptivePortal();
 };
 #endif
