@@ -3,27 +3,19 @@
 #ifndef __Walter_Led_Strip_
     #define __Walter_Led_Strip__
 
-    class WalterLedStrip : public Adafruit_NeoPixel
+    class WalterLedStrip : Adafruit_NeoPixel
     {
     private:
         /* data */
     public:
-        WalterLedStrip(int size);
+        WalterLedStrip(int size, int pin);
         ~WalterLedStrip();
         void begin();
         int size;
         WalterLed leds[];
         void update();
+        void setPixel(uint16_t);
 
     };
-
-    WalterLedStrip::WalterLedStrip(int size)
-    {
-    }
-
-    WalterLedStrip::~WalterLedStrip()
-    {
-    }
-
 
 #endif

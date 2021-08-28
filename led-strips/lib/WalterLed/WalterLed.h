@@ -8,11 +8,10 @@
     private:
         /* data */
     public:
-        WalterLed(int index, WalterLedStrip *strip);
+        WalterLed(int index);
         ~WalterLed();
         void setColor(int r, int g, int b);
         int index;
-        WalterLedStrip *strip;
         void
     };
 
